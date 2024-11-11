@@ -9,7 +9,7 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   final List<Map<String, String>> _allNotifications = [
-    {'message': 'Sensor 1 malfunction detected', 'date': '2024-07-18', 'time': '14:30', 'status': 'warning'}
+    {'message': 'The Lidar Sensor is not Working!', 'date': '2024-07-18', 'time': '14:30', 'status': 'critical'}
   ];
 
   List<Map<String, String>> _filteredNotifications = [];
@@ -34,16 +34,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Color _getNotificationColor(String status) {
-    switch (status) {
-      case 'critical':
-        return Colors.red; // For devices that are broken
-      case 'warning':
-        return const Color.fromARGB(255, 252, 247, 104); // For warnings
-      case 'working':
-        return Colors.green; // For devices that are working properly
-      default:
-        return Colors.white; // Default color for other statuses
-    }
+    return Colors.red; // Set color to red for all notifications
   }
 
   @override
