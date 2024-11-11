@@ -9,11 +9,7 @@ class NotificationScreen extends StatefulWidget {
 
 class _NotificationScreenState extends State<NotificationScreen> {
   final List<Map<String, String>> _allNotifications = [
-    {'message': 'Sensor 1 malfunction detected', 'date': '2024-07-18', 'time': '14:30', 'status': 'warning'},
-    {'message': 'Battery level low on Device 2', 'date': '2024-07-18', 'time': '15:00', 'status': 'warning'},
-    {'message': 'Sensor 3 not responding', 'date': '2024-07-17', 'time': '09:45', 'status': 'critical'},
-    {'message': 'Battery fully charged on Device 4', 'date': '2024-07-17', 'time': '10:30', 'status': 'working'},
-    {'message': 'Sensor 2 requires calibration', 'date': '2024-07-16', 'time': '11:00', 'status': 'warning'},
+    {'message': 'Sensor 1 malfunction detected', 'date': '2024-07-18', 'time': '14:30', 'status': 'warning'}
   ];
 
   List<Map<String, String>> _filteredNotifications = [];
@@ -74,7 +70,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               onPressed: () {
                 setState(() {
                   _filteredNotifications.add({
-                    'message': 'New notification',
+                    'message': 'Lidar Sensor is Not Working',
                     'date': '2024-07-19', // Default date
                     'time': '12:00', // Default time
                     'status': 'warning', // Default status

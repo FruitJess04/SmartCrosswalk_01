@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class LidarScreen extends StatefulWidget {
   const LidarScreen({super.key});
@@ -9,8 +8,26 @@ class LidarScreen extends StatefulWidget {
 }
 
 class _LidarScreenState extends State<LidarScreen> {
-  int _selectedSensor = 1;
-  List<int> _sensorData = [10, 20, 30, 40, 50, 60, 70]; // Example data
+  int _totalSensors = 0; // Total movement sensors count
+  final List<SensorData> _sensorHistory = []; // List to hold sensor history
+
+  @override
+  void initState() {
+    super.initState();
+    _simulateSensorData(); // Populate history with simulated data
+  }
+
+  void _simulateSensorData() {
+    // Simulate adding some sensor data to the history
+    for (int i = 1; i <= 20; i++) {
+      _totalSensors += 1;
+      _sensorHistory.add(SensorData(
+        id: i,
+        numberDetected: _totalSensors,
+        timestamp: DateTime.now().subtract(Duration(minutes: i * 5)).toString(),
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,62 +36,82 @@ class _LidarScreenState extends State<LidarScreen> {
         title: const Text('Lidar Sensor Monitoring'),
         backgroundColor: Colors.lightBlueAccent,
       ),
-      body: Padding(
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            const Text(
-              'Select Lidar Sensor',
-              style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-            ),
-            DropdownButton<int>(
-              value: _selectedSensor,
-              items: const [
-                DropdownMenuItem(value: 1, child: Text('Lidar Sensor 1')),
-                DropdownMenuItem(value: 2, child: Text('Lidar Sensor 2')),
-                DropdownMenuItem(value: 3, child: Text('Lidar Sensor 3')),
-                DropdownMenuItem(value: 4, child: Text('Lidar Sensor 4')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  _selectedSensor = value!;
-                  _sensorData = _getSensorData(_selectedSensor);
-                });
-              },
-            ),
             const SizedBox(height: 20.0),
-            Text(
-              'Lidar Sensor $_selectedSensor Data',
-              style: const TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+            // Display Total Movement Sensors
+            Card(
+              color: Colors.lightBlue[50],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  children: [
+                    const Icon(Icons.storage, size: 24.0),
+                    const SizedBox(width: 10),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Total Movement Sensors',
+                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          '$_totalSensors',
+                          style: const TextStyle(fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ),
-            const SizedBox(height: 20.0),
-            Expanded(
-              child: LineChart(
-                LineChartData(
-                  gridData: const FlGridData(show: true),
-                  titlesData: const FlTitlesData(show: true),
-                  borderData: FlBorderData(
-                    show: true,
-                    border: Border.all(color: const Color(0xff37434d), width: 1),
-                  ),
-                  minX: 0,
-                  maxX: 6,
-                  minY: 0,
-                  maxY: 70,
-                  lineBarsData: [
-                    LineChartBarData(
-                      spots: _sensorData
-                          .asMap()
-                          .entries
-                          .map((e) => FlSpot(e.key.toDouble(), e.value.toDouble()))
-                          .toList(),
-                      isCurved: true,
-                      color:Colors.blue,
-                      barWidth: 5,
-                      isStrokeCapRound: true,
-                      dotData: const FlDotData(show: false),
-                      belowBarData: BarAreaData(show: false),
+            const SizedBox(height: 20),
+            // Display Sensor History with scroll and 10 items visible
+            Card(
+              color: Colors.lightGreen[100],
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Sensor History',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      height: 300, // Fixed height to show 10 items with scrolling
+                      child: ListView.builder(
+                        itemCount: _sensorHistory.length,
+                        itemBuilder: (context, index) {
+                          final data = _sensorHistory[index];
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'ID: ${data.id}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                const SizedBox(height: 5),
+                                Text('Total Motion Detected: ${data.numberDetected}'),
+                                const SizedBox(height: 5),
+                                Text('Timestamp: ${data.timestamp}'),
+                                const Divider(), // Divider for visual separation
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),
@@ -85,20 +122,17 @@ class _LidarScreenState extends State<LidarScreen> {
       ),
     );
   }
+}
 
-  List<int> _getSensorData(int sensor) {
-    // Replace this with your actual data fetching logic
-    switch (sensor) {
-      case 1:
-        return [10, 20, 30, 40, 50, 60, 70];
-      case 2:
-        return [70, 60, 50, 40, 30, 20, 10];
-      case 3:
-        return [10, 30, 50, 70, 50, 30, 10];
-      case 4:
-        return [70, 50, 30, 10, 30, 50, 70];
-      default:
-        return [10, 20, 30, 40, 50, 60, 70];
-    }
-  }
+// Updated SensorData class to match `lidar_statuses` table structure
+class SensorData {
+  final int id;
+  final int numberDetected;
+  final String timestamp;
+
+  SensorData({
+    required this.id,
+    required this.numberDetected,
+    required this.timestamp,
+  });
 }
