@@ -66,20 +66,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
               ),
             ),
             const SizedBox(height: 20.0),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _filteredNotifications.add({
-                    'message': 'Lidar Sensor is Not Working',
-                    'date': '2024-07-19', // Default date
-                    'time': '12:00', // Default time
-                    'status': 'warning', // Default status
-                  });
-                });
-              },
-              child: const Text('Add Notification'),
-            ),
-            const SizedBox(height: 20.0),
             Expanded(
               child: ListView.builder(
                 itemCount: _filteredNotifications.length,
